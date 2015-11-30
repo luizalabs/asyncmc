@@ -1,14 +1,18 @@
+import logging
 import tornado.ioloop
 import functools
 import pickle
 import json
 import re
-import logging
 from tornado import gen
 
 from . import constants as const
 from .exceptions import ClientException, ValidationException
 from .pool import ConnectionPool
+
+
+logging.captureWarnings(True)
+logger = logging.getLogger()
 
 """client module for memcached (memory cache daemon)
 
@@ -308,7 +312,7 @@ class Client(object):
                     if val is False and not flags & const.FLAG_BOOLEAN:
                         raise ClientException('Unknown flag from server')
                     if key in received:
-                        raise ClientException('duplicate results from servers')
+                        logger.warn('duplicated results from server!')
 
                     received[key] = val
                 else:
